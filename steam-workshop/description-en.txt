@@ -1,0 +1,67 @@
+[h1]Ultrawide Fog Tint Fix[/h1]
+
+On an ultrawide screen CK3's distance fog washes out the sides of the map, and the left side gets an extra warm tint on top of it: the same bay is brown on the left of your screen and blue on the right, and northern conifers go almost white while the identical trees in the centre look normal.
+
+This mod removes it. Ordinary map colours, ordinary water, all the way across.
+
+[h2]Why it happens on wide screens[/h2]
+
+The fog factor in [code]jomini_fog.fxh[/code] is built from this:
+
+[code]HorizFac = 1 - abs( normalize( CameraPosition - WorldSpacePos ).y )[/code]
+
+Looking down at the middle of the screen, the vector from camera to terrain is mostly vertical, so that factor is near zero and there is no fog. Towards the left and right edges it becomes nearly horizontal and the factor approaches one. Fog is, in effect, "the edges of the screen" - and a 32:9 screen is mostly edges.
+
+Then every distance in the formula is tuned for how far a 16:9 screen reaches. [code]fog_end = 500[/code] sets where the ramp saturates; a 32:9 screen sees roughly twice as far sideways, so its outer thirds sit at the cap permanently.
+
+On top of that sits a second, [b]asymmetric[/b] layer:
+
+[code]relative_fog_color = { 0.6 0.2 -0.2 }
+relative_fog_begin = 100.0
+relative_fog_end   = 400.0[/code]
+
+Its blend factor depends only on how far [i]left[/i] of the camera a pixel is, over a 500 unit window. It adds red and green and subtracts blue. On 16:9 that window is about as wide as the visible map and reads as a gentle atmospheric gradient; on 32:9 everything past 400 units to the left takes the full warm wash.
+
+[h2]What the mod changes[/h2]
+
+Five environment files in [code]gfx/map/environment/[/code] - the ones that ship a non-zero relative fog - with the fog values replaced. As published it uses the [b]off[/b] preset:
+
+[list]
+[*][code]fog_max = 0.0[/code] - the distance fog ramp is zeroed, so nothing is blended anywhere
+[*][code]relative_fog_color = { 0 0 0 }[/code] - the asymmetric warm layer is gone
+[/list]
+
+No shader is touched, so there is no shader recompile and no first-load delay. Toggling the mod in the launcher playset is a clean A/B test against vanilla.
+
+[h2]Other presets[/h2]
+
+The source repository ships a small script with five presets, in case you want haze back but tuned for your screen instead of removed:
+
+[list]
+[*][b]vanilla[/b] - byte-identical to the base game, for comparison
+[*][b]scaled[/b] - every distance doubled for 32:9 / 16:9 = 2, so a given screen position gets the haze a 16:9 player sees there, warm tint kept
+[*][b]neutral[/b] - as scaled, minus the asymmetric warm tint
+[*][b]soft[/b] - as neutral, with the strength cap cut from 20% to 8%
+[*][b]off[/b] - what this item ships
+[/list]
+
+[h2]Notes[/h2]
+
+[list]
+[*][b]On 16:9 this still works[/b], it is just a much smaller change - the effect it removes is mild at that aspect ratio
+[*]Graphics data only: no gameplay, script or history files are touched, so ironman and achievements are unaffected
+[*]Safe to add or remove at any time, including mid-campaign
+[*]Removing all distance fog does flatten the sense of depth on very distant mountains. If that bothers you, the [b]soft[/b] preset from the repository is the one to use
+[*]Built for CK3 1.19.x. These are full file overrides, so a patch that reworks the map environment will need an update here
+[/list]
+
+[h2]Compatibility[/h2]
+
+Replaces five files in [code]gfx/map/environment/[/code]. Conflicts only with mods that edit the same files - map graphics or lighting overhauls. If you use one, place this mod [b]below[/b] it in the load order to keep the fix.
+
+[h2]Source[/h2]
+
+Full source, the preset script and the shader analysis behind it:
+[url=https://github.com/mekedron/ck3-ultrawide-fog-fix]github.com/mekedron/ck3-ultrawide-fog-fix[/url]
+
+Issues and pull requests are welcome.

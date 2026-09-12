@@ -82,6 +82,7 @@ it also picks up any unrelated change Paradox makes to them.
     tools/apply_preset.py                rebuilds those from vanilla with a preset
     tools/make_thumbnail.py              rebuilds thumbnail.png from two screenshots
     install.sh                           copies the mod into the Proton prefix
+    steam-workshop/                      Workshop and Paradox Mods listing texts
 
 ## Installing
 

@@ -1,0 +1,1 @@
+On ultrawide screens CK3's distance fog washes out the sides of the map and tints the left side warm - the same bay is brown on the left and blue on the right. This removes it. No shaders touched.
