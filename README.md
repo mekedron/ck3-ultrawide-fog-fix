@@ -5,68 +5,78 @@ super-ultrawide displays. Ordinary distance fog is left alone.
 
 ## Cause
 
-`jomini_fog.fxh` blends a second fog colour on top of the normal one, and the
-blend factor depends on nothing but how far **left of the camera** a pixel is:
+`jomini_fog.fxh` computes the map's distance fog like this:
 
-    float BlendFactor = smoothstep( CameraPosition.x + RelativeFogBegin,
-                                    CameraPosition.x - RelativeFogEnd,
-                                    WorldSpacePos.x );
-    float3 BlendedFogColor = FogColor + BlendFactor * RelativeFogColor;
+    Diff      = CameraPosition - WorldSpacePos
+    HorizFac  = 1 - abs( normalize( Diff ).y )
+    Ramp      = min( ( |Diff|^2 - fog_begin^2 ) / ( fog_end^2 - fog_begin^2 ), fog_max )
+    FogFactor = saturate( Ramp * HorizFac ) * zoom fade * ( 1 - height fade ) * noise
+    FogColour = fog_color + smoothstep( CamX + rel_begin, CamX - rel_end, WorldX ) * relative_fog_color
+    Pixel     = lerp( Pixel, FogColour, FogFactor )
 
-With the vanilla values from `gfx/map/environment/environment.txt`:
+`HorizFac` is what makes this an ultrawide problem. Looking down at the middle of
+the screen, the vector from camera to terrain is mostly vertical, so the factor is
+near zero and there is no fog. Towards the left and right edges that vector becomes
+nearly horizontal and the factor approaches one. Fog is, in effect, "the edges of
+the screen" - and a 32:9 screen is mostly edges.
+
+On top of that every distance in the formula is tuned for how far a 16:9 screen
+reaches. `fog_end = 500` sets where the ramp saturates at `fog_max`; a 32:9 screen
+sees roughly twice as far sideways, so its outer thirds sit at full `fog_max`
+permanently.
+
+The vanilla values, identical in all five files this mod overrides:
+
+    fog_color = hex{ 50779b }      # blue-grey
+    fog_begin = 20
+    fog_end   = 500
+    fog_max   = 0.2                # cap: at most 20% blend toward the fog colour
 
     relative_fog_color = { 0.6 0.2 -0.2 }
     relative_fog_begin = 100.0
     relative_fog_end   = 400.0
 
-the gradient runs out over a 500 unit window either side of the camera, and
-`RelativeFogColor` adds a lot of red, some green and *subtracts* blue - a warm,
-desaturating wash.
+`relative_fog_color` is a second, *asymmetric* layer: its blend factor depends only
+on how far left of the camera a pixel is, over a 500 unit window. It adds red and
+green and subtracts blue, so the left side of the map is washed warm and pale while
+the same terrain in the centre looks normal. That is the part that turns northern
+conifers white.
 
-On 16:9 that window is about as wide as the visible map, so the effect reads as a
-gentle atmospheric gradient. On 32:9 the screen is roughly twice as wide in world
-units, so everything past 400 units to the left sits at blend factor 1 and takes
-the full tint: the left third of the map goes pale and the conifers there turn
-almost white, while the same trees in the centre look normal.
+Removing only that warm layer is not enough - it leaves the blue `fog_color` haze,
+which is the wash that covers the whole map regardless of what is drawn on it.
 
-It is the same class of bug as the pause menu one - a value tuned for a 16:9 field
-of view, applied unscaled to a much wider one.
+## Presets
 
-## Fix
+Because this is data and not a shader, switching presets needs no recompile - just
+re-run the installer and restart:
 
-`relative_fog_color` is set to `{ 0 0 0 }` in the five environment files that
-carry a non-zero value:
+    tools/apply_preset.py off
+    ./install.sh
 
-    environment.txt
-    environment_top_left.txt
-    environment_bottom_left.txt
-    environment_ce2.txt
-    environment_compromise.txt
+| preset | fog_max | fog_end | relative tint | what it does |
+| --- | --- | --- | --- | --- |
+| `vanilla` | 0.2 | 500 | warm, 100/400 | byte-identical to the base game, for A/B |
+| `scaled` | 0.2 | 1000 | warm, 200/800 | every distance doubled for 32:9 / 16:9 = 2, so a given screen position gets the haze a 16:9 player sees there |
+| `neutral` | 0.2 | 1000 | none | as `scaled`, minus the asymmetric warm tint |
+| `soft` | 0.08 | 1000 | none | as `neutral`, strength cap cut from 20% to 8% |
+| `off` | 0.0 | 500 | none | no distance fog at all |
 
-(the `*_table` environments already ship it zeroed). The blend factor still gets
-computed, it just adds nothing.
+The mod currently ships the **`off`** preset: `fog_max = 0` zeroes the ramp, so
+nothing is blended anywhere. That is the decisive test - if the wash is still there
+with this installed, distance fog is not what you are looking at and the next
+suspect is the flatmap blend at wide zoom.
 
-Everything else is untouched: `fog_color`, `fog_begin`, `fog_end` and `fog_max`
-still give the normal blue distance haze, and `relative_fog_height_begin/end`
-still fade fog out with altitude.
+Once fog is confirmed as the cause, `soft` or `scaled` are the ones to live with;
+`off` removes all sense of depth on the map.
 
-## Softening it instead of removing it
-
-If you would rather keep the effect but have it behave the way it does on 16:9,
-leave `relative_fog_color` alone and widen the window instead - scale both
-distances by roughly your aspect ratio over 16:9. For 5120x1440 that is
-`3.56 / 1.78 = 2`:
-
-    relative_fog_begin = 200.0
-    relative_fog_end   = 800.0
-
-The gradient then spans twice the world distance, so a given screen position gets
-about the tint a 16:9 player sees there.
+`apply_preset.py` rebuilds the files from the vanilla ones in the Steam install, so
+it also picks up any unrelated change Paradox makes to them.
 
 ## Layout
 
     descriptor.mod                       mod metadata
-    gfx/map/environment/*.txt            five environment files, relative fog zeroed
+    gfx/map/environment/*.txt            five environment files, generated
+    tools/apply_preset.py                rebuilds those from vanilla with a preset
     install.sh                           copies the mod into the Proton prefix
 
 ## Installing
