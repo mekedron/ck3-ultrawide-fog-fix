@@ -1,0 +1,68 @@
+cubemap_intensity = 2
+cubemap = "gfx/map/environment/environment_terrain_sunny.dds"
+
+sun_intensity = 25
+sun_color = hsv{ 0.08 0.1 1 }
+
+sun_direction = { -7 8 7 }
+
+water_sun_direction_offset = { 0 0 0 }
+shadow_direction_offset = { 0 2 -3 }
+
+shadowmap_depthbias = -0.002
+shadowmap_kernelscale = 2
+shadowmap_fadefactor = 5
+
+map_objects_diffuse_light_scale = 1.0
+map_objects_diffuse_ibl_scale = 8.0
+map_objects_specular_light_scale = 1.0
+map_objects_specular_ibl_scale= 1.0
+
+fog_color = hex{ 50779b }
+fog_begin = 20
+fog_end = 500
+fog_max = 0.2
+
+# Ultrawide Fog Tint Fix: was { 0.6 0.2 -0.2 }.
+# This colour is added to fog_color with a blend factor driven purely by how far
+# left of the camera a pixel is, over a 100..400 unit window - a window sized for
+# a 16:9 field of view. A 32:9 screen shows far more than 400 units either side,
+# so its whole left third sits at blend factor 1 and gets the full warm wash.
+# Zeroed here; ordinary distance fog (fog_color / fog_begin / fog_end / fog_max)
+# is untouched.
+relative_fog_color = { 0 0 0 }
+relative_fog_begin = 100.0
+relative_fog_end = 400.0
+relative_fog_height_begin = 10.0
+relative_fog_height_end = 40.0
+
+exposure_function = "FixedExposure"
+
+exposure = 1.7
+contrast = 1.12
+pivot = 0.18
+
+tonemap_function = "TonyMcMapface"
+
+bloom_width = 0.5
+bloom_scale = 0.5
+bright_threshold = 0.5
+
+depthoffield = {
+	enabled = yes
+	dof_samplecount = 16
+	dof_baseradius = 0.5
+	dof_blurblendmin = 0.1
+	dof_blurblendmax = 2.0
+
+	dof_blurmin = 1.0
+	dof_blurmax = 50.0
+	dof_blurscale = 3.0
+	dof_blurexponent = 1.3
+	dof_heightmin = 0.0
+	dof_heightmax = 1000.0
+}
+
+fogblur = {
+	enabled = yes
+}
