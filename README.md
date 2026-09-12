@@ -1,5 +1,7 @@
 # Ultrawide Fog Tint Fix (CK3)
 
+<img src="thumbnail.png" alt="The same bay: brown on the left in vanilla, one colour with the mod" width="360">
+
 Removes the warm haze that washes out the left side of the map on ultrawide and
 super-ultrawide displays. Ordinary distance fog is left alone.
 
@@ -75,8 +77,10 @@ it also picks up any unrelated change Paradox makes to them.
 ## Layout
 
     descriptor.mod                       mod metadata
+    thumbnail.png                        preview image, must sit in the mod root
     gfx/map/environment/*.txt            five environment files, generated
     tools/apply_preset.py                rebuilds those from vanilla with a preset
+    tools/make_thumbnail.py              rebuilds thumbnail.png from two screenshots
     install.sh                           copies the mod into the Proton prefix
 
 ## Installing
