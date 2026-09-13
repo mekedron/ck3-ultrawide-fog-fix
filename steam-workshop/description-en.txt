@@ -4,6 +4,11 @@ On an ultrawide screen CK3's distance fog washes out the sides of the map, and t
 
 This mod removes it. Ordinary map colours, ordinary water, all the way across.
 
+[h2]You might be interested[/h2]
+
+Check out this mod! It finally fixes the pause menu on ultrawide screens.
+https://steamcommunity.com/sharedfiles/filedetails/?id=3797535808
+
 [h2]Why it happens on wide screens[/h2]
 
 The fog factor in jomini_fog.fxh is built from this:
@@ -58,6 +63,8 @@ The source repository ships a small script with five presets, in case you want h
 [h2]Compatibility[/h2]
 
 Replaces five files in gfx/map/environment/. Conflicts only with mods that edit the same files - map graphics or lighting overhauls. If you use one, place this mod [b]below[/b] it in the load order to keep the fix.
+
+Not for [b]A Game of Thrones[/b]: AGOT ships its own environment.txt with its own sun and fog, and this mod would put vanilla's lighting back over it.
 
 [h2]Source[/h2]
 
