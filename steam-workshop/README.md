@@ -20,7 +20,7 @@ BBCode version first, then regenerate, so the two never drift apart.
 
 * **Title:** Ultrawide Fog Tint Fix
 * **Tags:** Fixes, Graphics, Utilities — same as `descriptor.mod`
-* **Version:** 1.0.0, `supported_version="1.19.*"`
+* **Version:** 1.0.1, `supported_version="1.20.*"`
 * **Visibility:** public
 
 Short descriptions are kept under the launcher's 200 character limit; both BBCode descriptions

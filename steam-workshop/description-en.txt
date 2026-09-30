@@ -57,7 +57,7 @@ The source repository ships a small script with five presets, in case you want h
 [*]Graphics data only: no gameplay, script or history files are touched, so ironman and achievements are unaffected
 [*]Safe to add or remove at any time, including mid-campaign
 [*]Removing all distance fog does flatten the sense of depth on very distant mountains. If that bothers you, the [b]soft[/b] preset from the repository is the one to use
-[*]Built for CK3 1.19.x. These are full file overrides, so a patch that reworks the map environment will need an update here
+[*]Built for CK3 1.20.x. These are full file overrides, so a patch that reworks the map environment will need an update here
 [/list]
 
 [h2]Compatibility[/h2]
