@@ -1,5 +1,9 @@
 [h1]Ultrawide Fog Tint Fix[/h1]
 
+[h2]Help fix this in the base game[/h2]
+I have asked Paradox to take the ultrawide fixes into the game itself — the code is ready. If this mod helps you, please [b]like the thread or leave a reply[/b], so the developers see how many ultrawide players there are:
+[url=https://forum.paradoxplaza.com/forum/threads/1946916/]Paradox forum: ultrawide pause menu and sharp terrain[/url]
+
 On an ultrawide screen CK3's distance fog washes out the sides of the map, and the left side gets an extra warm tint on top of it: the same bay is brown on the left of your screen and blue on the right, and northern conifers go almost white while the identical trees in the centre look normal.
 
 This mod removes it. Ordinary map colours, ordinary water, all the way across.
