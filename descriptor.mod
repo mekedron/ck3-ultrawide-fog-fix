@@ -1,4 +1,4 @@
-version="1.0.1"
+version="1.0.2"
 tags={
 	"Fixes"
 	"Graphics"
@@ -6,5 +6,5 @@ tags={
 }
 name="Ultrawide Fog Tint Fix"
 picture="thumbnail.png"
-supported_version="1.20.*"
+supported_version="1.21.*"
 remote_file_id="3800270049"

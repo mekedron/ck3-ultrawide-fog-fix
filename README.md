@@ -92,7 +92,7 @@ and toggling the mod in the playset is a clean A/B test.
 
 ## Game version
 
-Built against 1.20.0.2 (Crozier). These files are full overrides, so after a patch
+Built against 1.21.0 (Florin). These files are full overrides, so after a patch
 re-diff them against `<steam>/Crusader Kings III/game/gfx/map/environment/`.
 
 ## Compatibility
